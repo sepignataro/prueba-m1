@@ -32,12 +32,57 @@ BinarySearchTree.prototype.insert = function (value) {
     }
   }
 };
-BinarySearchTree.prototype.contains = function () {};
-BinarySearchTree.prototype.size = function () {
-  
+BinarySearchTree.prototype.contains = function (value) {
+  if (this.value === value) return true;
+  if (this.left && this.left.contains(value)) return true;
+  if (this.right && this.right.contains(value)) return true;
+  return false;
 };
-BinarySearchTree.prototype.depthFirstForEach = function () {};
-BinarySearchTree.prototype.breadthFirstForEach = function () {};
+BinarySearchTree.prototype.size = function () {
+  let count = 1;
+  if (this.left) {
+    count += this.left.size();
+  }
+  if (this.right) {
+    count += this.right.size();
+  }
+  return count;
+};
+BinarySearchTree.prototype.depthFirstForEach = function (cb, type) {
+  switch (type) {
+    case "pre-order":
+      cb(this.value);
+      if (this.left) this.left.depthFirstForEach(cb, type);
+      if (this.right) this.right.depthFirstForEach(cb, type);
+      break;
+
+    case "post-order":
+      if (this.left) this.left.depthFirstForEach(cb, type);
+      if (this.right) this.right.depthFirstForEach(cb, type);
+      cb(this.value);
+      break;
+
+    default:
+      if (this.left) this.left.depthFirstForEach(cb, type);
+      cb(this.value);
+      if (this.right) this.right.depthFirstForEach(cb, type);
+      break;
+  }
+};
+BinarySearchTree.prototype.breadthFirstForEach = function (cb, queue) {
+  if (!queue) {
+    var queue = [];
+  }
+
+  cb(this.value);
+
+  if (this.left) queue.push(this.left);
+  if (this.right) queue.push(this.right);
+
+  if (queue.length > 0) {
+    queue.shift().breadthFirstForEach(cb, queue);
+  }
+};
 // No modifiquen nada debajo de esta linea
 // --------------------------------
 
